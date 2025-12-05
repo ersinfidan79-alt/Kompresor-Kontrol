@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ESP32 BLE Kontrol</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom right, #74ebd5, #ACB6E5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+}
+
+h2 {
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 2em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.button-group button {
+    width: 100%;
+    font-size: 4em;
+    padding: 60px 0;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.35);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+    background-size: 200% 100%;
+    transition: all 0.3s ease, background-position 0.5s ease;
+}
+
+.button-group button:active {
+    transform: scale(0.95);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+}
+
+.button-group button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+    background-position: right center;
+}
+
+#btnConnect {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+button[onclick*="START"] {
+    background: linear-gradient(135deg, #007bff, #00bfff);
+}
+
+button[onclick*="STOP"] {
+    background: linear-gradient(135deg, #dc3545, #ff4c4c);
+}
+
+@media (max-width: 600px) {
+    h2 {
+        font-size: 2.5em;
+    }
+    .button-group button {
+        font-size: 4.5em;
+        padding: 70px 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>BLE Bağlantı</h2>
+    <div class="button-group">
+        <button id="btnConnect"><i class="fas fa-bluetooth"></i> Bağlan</button>
+    </div>
+
+    <h2>Komut Gönder</h2>
+    <div class="button-group">
+        <button onclick="sendCommand('START')"><i class="fas fa-play"></i> START</button>
+        <button onclick="sendCommand('STOP')"><i class="fas fa-stop"></i> STOP</button>
+    </div>
+</div>
+
+<script>
+let device;
+let characteristic;
+
+document.getElementById("btnConnect").onclick = async () => {
+    try {
+        device = await navigator.bluetooth.requestDevice({
+            filters: [{ name: "ESP32_S3_BT" }],
+            optionalServices: ["00001234-0000-1000-8000-00805f9b34fb"]
+        });
+
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService("00001234-0000-1000-8000-00805f9b34fb");
+        characteristic = await service.getCharacteristic("0000abcd-0000-1000-8000-00805f9b34fb");
+
+        alert("Bluetooth bağlandı!");
+        if(navigator.vibrate) navigator.vibrate(100); // kısa titreşim
+    } 
+    catch (error) {
+        alert("Bağlantı hatası: " + error);
+    }
+};
+
+async function sendCommand(cmd) {
+    if (!characteristic) {
+        alert("Önce bağlanın!");
+        return;
+    }
+
+    const data = new TextEncoder().encode(cmd);
+    await characteristic.writeValue(data);
+    alert(cmd + " gönderildi");
+    if(navigator.vibrate) navigator.vibrate(50); // kısa titreşim
+}
+</script>
+
+</body>
+</html>
