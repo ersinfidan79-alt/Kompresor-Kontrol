@@ -1,2 +1,1 @@
-# Kompresor-Kontrol
-Komresor
+Kompresor
