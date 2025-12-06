@@ -3,56 +3,135 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ESP32 Uzaktan Kontrol</title>
+
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <style>
-    body { background: #0e0e0e; color: white; font-family: Arial; text-align: center; margin: 0; padding: 0; }
-    .container { margin-top: 60px; padding: 20px; }
-    h2 { color: #00e5ff; margin-bottom: 30px; }
-    .btn { width: 80%; max-width: 300px; padding: 20px; margin: 15px auto; font-size: 22px; font-weight: bold; border: none; border-radius: 14px; color: white; cursor: pointer; transition: 0.2s; display: block; }
-    .btn-start { background: linear-gradient(45deg, #00c853, #00e676); box-shadow: 0 4px 12px rgba(0,230,118,0.5); }
-    .btn-stop { background: linear-gradient(45deg, #d50000, #ff1744); box-shadow: 0 4px 12px rgba(255,23,68,0.5); }
-    .btn:active { transform: scale(0.95); }
-    #toast { visibility: hidden; min-width: 200px; background: rgba(0,0,0,0.8); color: #fff; padding: 15px; border-radius: 8px; position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); font-size: 18px; }
-    #toast.show { visibility: visible; animation: fadein 0.4s, fadeout 0.4s 1.4s; }
-    @keyframes fadein { from { bottom: 10px; opacity: 0; } to { bottom: 40px; opacity: 1; } }
-    @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 10px; opacity: 0; } }
+    body {
+        background: #0e0e0e;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .container {
+        margin-top: 60px;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #00e5ff;
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        width: 80%;
+        max-width: 300px;
+        padding: 20px;
+        margin: 15px auto;
+        font-size: 22px;
+        font-weight: bold;
+        border: none;
+        border-radius: 14px;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        display: block;
+    }
+
+    .btn-start {
+        background: linear-gradient(45deg, #00c853, #00e676);
+        box-shadow: 0 4px 12px rgba(0, 230, 118, 0.5);
+    }
+    .btn-start:active {
+        transform: scale(0.95);
+    }
+
+    .btn-stop {
+        background: linear-gradient(45deg, #d50000, #ff1744);
+        box-shadow: 0 4px 12px rgba(255, 23, 68, 0.5);
+    }
+    .btn-stop:active {
+        transform: scale(0.95);
+    }
+
+    /* Pop-up */
+    #toast {
+        visibility: hidden;
+        min-width: 200px;
+        background: rgba(0,0,0,0.8);
+        color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        position: fixed;
+        left: 50%;
+        bottom: 40px;
+        transform: translateX(-50%);
+        font-size: 18px;
+    }
+
+    #toast.show {
+        visibility: visible;
+        animation: fadein 0.4s, fadeout 0.4s 1.4s;
+    }
+
+    @keyframes fadein {
+        from { bottom: 10px; opacity: 0; }
+        to   { bottom: 40px; opacity: 1; }
+    }
+
+    @keyframes fadeout {
+        from { bottom: 40px; opacity: 1; }
+        to   { bottom: 10px; opacity: 0; }
+    }
 </style>
+
 </head>
 <body>
 
 <div class="container">
-    <h2>Komresör Kontrol(Made in Ersin)</h2>
+    <h2>Kompresör Kontrol
+        (Madein Ersin)</h2>
+
     <button class="btn btn-start" onclick="sendStart()">🟢 START</button>
     <button class="btn btn-stop" onclick="sendStop()">🔴 STOP</button>
+
     <div id="toast">Komut Gönderildi ✔</div>
 </div>
 
-<script src="config.js"></script>
 
 <script>
-    if (typeof MQTT_HOST === "undefined" || typeof MQTT_USER === "undefined" || typeof MQTT_PASS === "undefined") {
-        alert("Lütfen config.js dosyasında MQTT bilgilerini girin!");
-    }
-
+    // HiveMQ Cloud bilgilerin
+    const host = "wss://356d2463ef40488694ce4fe2d4a23976.s1.eu.hivemq.cloud:8884/mqtt";
     const options = {
-        username: MQTT_USER,
-        password: MQTT_PASS,
-        keepalive: 60,
+        username: "wersin3230",
+        password: "We112233",
+        keepalive: 60,   // sürekli bağlı kalma
         clean: true,
         reconnectPeriod: 2000
     };
 
-    const client = mqtt.connect(MQTT_HOST, options);
+    console.log("MQTT'ye bağlanılıyor...");
+    const client = mqtt.connect(host, options);
 
-    client.on("connect", () => console.log("HTML MQTT Bağlandı!"));
-    client.on("reconnect", () => console.log("MQTT Yeniden Bağlanıyor..."));
-    client.on("error", (err) => console.error("MQTT HATASI:", err));
+    client.on("connect", () => {
+        console.log("HTML MQTT Bağlandı!");
+    });
+
+    client.on("reconnect", () => {
+        console.log("MQTT Yeniden Bağlanıyor...");
+    });
+
+    client.on("error", (err) => {
+        console.log("MQTT HATASI:", err);
+    });
 
     function toastGoster() {
         let toast = document.getElementById("toast");
         toast.className = "show";
-        setTimeout(() => { toast.className = toast.className.replace("show",""); }, 1800);
+        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 1800);
     }
 
     function sendStart() {
