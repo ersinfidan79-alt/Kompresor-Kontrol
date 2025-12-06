@@ -22,13 +22,13 @@
 <body>
 
 <div class="container">
-    <h2>ESP32 Uzaktan Kontrol</h2>
+    <h2>Komresör Kontrol(Made in Ersin)</h2>
     <button class="btn btn-start" onclick="sendStart()">🟢 START</button>
     <button class="btn btn-stop" onclick="sendStop()">🔴 STOP</button>
     <div id="toast">Komut Gönderildi ✔</div>
 </div>
 
-<script src="config.js"></script> <!-- MQTT bilgileri burada -->
+<script src="config.js"></script>
 
 <script>
     if (typeof MQTT_HOST === "undefined" || typeof MQTT_USER === "undefined" || typeof MQTT_PASS === "undefined") {
