@@ -2,94 +2,29 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>ESP32 Start / Stop Kontrol</title>
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<title>ESP32 Kontrol</title>
 
 <style>
-    body {
-        font-family: Arial;
-        text-align: center;
-        padding-top: 40px;
-        background: #f2f2f2;
-    }
-    .btn {
-        width: 250px;
-        padding: 25px;
-        font-size: 26px;
-        margin: 20px;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        color: white;
-        font-weight: bold;
-    }
-    .start { background: #28a745; }
-    .stop  { background: #dc3545; }
-
-    /* ---- Uyarı Kutusu (alert yerine) ---- */
-    #popup {
-        position: fixed;
-        top: 35%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 25px 40px;
-        border-radius: 15px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        font-size: 24px;
-        display: none;
-    }
+    body { text-align:center; font-family:Arial; padding-top:40px; }
+    .btn { width:250px; padding:25px; font-size:26px; margin:20px; border:none;
+           border-radius:20px; cursor:pointer; color:white; font-weight:bold; }
+    .start { background:#28a745; }
+    .stop  { background:#dc3545; }
 </style>
 
 </head>
 <body>
 
 <h1>KOMPRESÖR KONTROL</h1>
-<h3>Made in ERSİN</h3>
 
-<button class="btn start" onclick="sendStart()">START</button>
-<br>
-<button class="btn stop" onclick="sendStop()">STOP</button>
-
-<div id="popup"></div>
+<button class="btn start" onclick="sendCmd('start')">START</button>
+<button class="btn stop" onclick="sendCmd('stop')">STOP</button>
 
 <script>
-    const AIO_USERNAME = "wersin3230";
-    const AIO_KEY = "aio_Ldds66f0rjVZFz8qpv1s0ZudjKOI";
-
-    const FEED_START = AIO_USERNAME + "/feeds/start";
-    const FEED_STOP  = AIO_USERNAME + "/feeds/stop";
-
-    const client = mqtt.connect("wss://io.adafruit.com:443/mqtt", {
-        username: AIO_USERNAME,
-        password: AIO_KEY
-    });
-
-    client.on("connect", function() {
-        console.log("Adafruit IO'ya bağlandı!");
-    });
-
-    function showPopup(msg) {
-        let p = document.getElementById("popup");
-        p.innerText = msg;
-        p.style.display = "block";
-
-        setTimeout(() => {
-            p.style.display = "none";
-        }, 1500);
-    }
-
-    function sendStart() {
-        client.publish(FEED_START, "ON");
-        showPopup("START komutu gönderildi!");
-    }
-
-    function sendStop() {
-        client.publish(FEED_STOP, "ON");
-        showPopup("STOP komutu gönderildi!");
-    }
+function sendCmd(cmd) {
+    fetch("http://192.168.1.50/" + cmd);  // ESP32 IP burada
+}
 </script>
 
 </body>
 </html>
-
