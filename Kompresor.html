@@ -109,7 +109,7 @@ let characteristic;
 document.getElementById("btnConnect").onclick = async () => {
     try {
         device = await navigator.bluetooth.requestDevice({
-            filters: [{ name: "ESP32_S3_BT" }],
+            filters: [{ name: "KOMPRESOR" }],
             optionalServices: ["00001234-0000-1000-8000-00805f9b34fb"]
         });
 
