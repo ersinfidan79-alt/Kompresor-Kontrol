@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
 <meta charset="utf-8">
 <title>KOMPRESOR</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 html, body {
     height: 100%;
@@ -17,13 +18,15 @@ html, body {
 
 .container {
     text-align: center;
-    width: 100%;
+    width: 95%;
+    max-width: 500px;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 h2 {
     color: #fff;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-size: 2em;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
 }
@@ -31,23 +34,23 @@ h2 {
 .button-group {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     width: 100%;
 }
 
 .button-group button {
     width: 100%;
-    font-size: 4em;
-    padding: 60px 0;
+    font-size: 2em;
+    padding: 20px 0;
     border: none;
-    border-radius: 40px;
+    border-radius: 20px;
     cursor: pointer;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.35);
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     box-sizing: border-box;
     background-size: 200% 100%;
     transition: all 0.3s ease, background-position 0.5s ease;
@@ -55,12 +58,12 @@ h2 {
 
 .button-group button:active {
     transform: scale(0.95);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.25);
 }
 
 .button-group button:hover {
-    transform: scale(1.08);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.45);
     background-position: right center;
 }
 
@@ -78,11 +81,12 @@ button[onclick*="STOP"] {
 
 @media (max-width: 600px) {
     h2 {
-        font-size: 2.5em;
+        font-size: 1.8em;
+        margin-bottom: 15px;
     }
     .button-group button {
-        font-size: 4.5em;
-        padding: 70px 0;
+        font-size: 1.5em;
+        padding: 18px 0;
     }
 }
 </style>
